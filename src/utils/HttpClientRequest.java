@@ -1,3 +1,5 @@
+package utils;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -15,19 +17,6 @@ public class HttpClientRequest {
 
     public HttpClientRequest(String url) {
         this.url = url;
-    }
-
-    public void send() {
-        try {
-            var uri = URI.create(this.url);
-            HttpClient client = java.net.http.HttpClient.newHttpClient();
-            var request = HttpRequest.newBuilder(uri).GET().build();
-            setResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
-            setBody(response.body());
-            setSuccessful(response.statusCode() == 200);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     public HttpResponse<String> getResponse() {
@@ -52,5 +41,18 @@ public class HttpClientRequest {
 
     private void setSuccessful(boolean successful) {
         this.isSuccessful = successful;
+    }
+
+    public void send() {
+        try {
+            var uri = URI.create(this.url);
+            HttpClient client = java.net.http.HttpClient.newHttpClient();
+            var request = HttpRequest.newBuilder(uri).GET().build();
+            setResponse(client.send(request, HttpResponse.BodyHandlers.ofString()));
+            setBody(response.body());
+            setSuccessful(response.statusCode() == 200);
+        } catch (Exception e) {
+            System.out.println("HttpClientRequest Exception: ".concat(e.getMessage()));
+        }
     }
 }

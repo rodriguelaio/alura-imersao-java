@@ -1,3 +1,5 @@
+package utils;
+
 import java.io.FileInputStream;
 import java.util.Properties;
 
@@ -12,6 +14,7 @@ public class ConfigPropertiesReader {
             properties.load(fileInputStream);
             return properties.getProperty(propertyKey);
         } catch (Exception e) {
+            System.out.println("ConfigPropertiesReader Exception: ".concat(e.getMessage()));
             return null;
         }
     }

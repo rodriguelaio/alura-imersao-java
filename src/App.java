@@ -1,4 +1,7 @@
+import enums.URLS;
 import models.Movie;
+import utils.HttpClientRequest;
+import utils.JsonParser;
 
 import java.util.List;
 
@@ -8,6 +11,8 @@ public class App {
 
     private static final String MAGENTA_BACKGROUND = "48;2;255;0;255";
 
+    private static final String PURPLE_BACKGROUND = "48;2;142;36;170";
+
     private static final String BOLD = "1";
 
     private static final String ANSI_RESET = "0";
@@ -15,7 +20,6 @@ public class App {
     private static final String STAR_UNICODE = "\u2b50";
 
     public static void main(String[] args) {
-
         List<Movie> movies = JsonParser.parser(getTopMovies());
         if (movies == null) {
             return;
@@ -25,10 +29,10 @@ public class App {
 
     private static String getTopMovies() {
         String responseBody;
-        if ((responseBody = getRequestBody(getImdDbUrl())) != null) {
+        if ((responseBody = getRequestBody(URLS.IMDB_TOP_250_MOVIES.getUrl())) != null) {
             return responseBody;
         }
-        return getRequestBody(getMockedApiUrl());
+        return getRequestBody(URLS.MOCKED_TOP_250_MOVIES.getUrl());
     }
 
     private static String getRequestBody(String url) {
@@ -40,32 +44,33 @@ public class App {
         return httpClientRequest.getBody();
     }
 
-    private static String getImdDbUrl() {
-        var imDbEndpoint = ConfigPropertiesReader.getConfigPropertiesValue("imDbUrl");
-        var imDbToken = ConfigPropertiesReader.getConfigPropertiesValue("imDbToken");
-        if (imDbEndpoint == null || imDbToken == null) {
-            return null;
-        }
-        return imDbEndpoint.concat("/").concat(imDbToken);
-    }
-
-    private static String getMockedApiUrl() {
-        return ConfigPropertiesReader.getConfigPropertiesValue("mockedTop250MoviesApiUrl");
-    }
-
     private static void printMoviesBeautified(List<Movie> movies) {
+        PersonalMovieRating personalMovieRating = new PersonalMovieRating();
+        Double[] personalRate = {0.0};
         movies.forEach(movie -> {
+            if (personalMovieRating.isVoting()) {
+                personalMovieRating.rateMovie(movie.getTitle());
+                personalRate[0] = personalMovieRating.getPersonalRating();
+            }
             System.out.println("Título: ".concat(movie.getTitle()));
             System.out.println("Poster: ".concat(movie.getImage()));
-            System.out.println(ESC_UNICODE.concat(MAGENTA_BACKGROUND)
-                .concat(";")
-                .concat(BOLD)
-                .concat("mClassificação: ")
-                .concat(movie.getRating().toString())
-                .concat(ESC_UNICODE)
-                .concat(ANSI_RESET)
-                .concat("m"));
-            System.out.println(STAR_UNICODE.repeat(movie.getRating().intValue()));
+            printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
+            if (personalMovieRating.isVoting()) {
+                printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
+                personalMovieRating.askingKeepRating();
+            }
         });
+    }
+
+    private static void printRating(String description, Double rate, String rateColor) {
+        System.out.println(ESC_UNICODE.concat(rateColor)
+            .concat(";")
+            .concat(BOLD)
+            .concat("m".concat(description))
+            .concat(rate.toString())
+            .concat(ESC_UNICODE)
+            .concat(ANSI_RESET)
+            .concat("m"));
+        System.out.println(STAR_UNICODE.repeat(rate.intValue()));
     }
 }
