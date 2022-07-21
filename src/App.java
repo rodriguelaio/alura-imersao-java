@@ -3,6 +3,8 @@ import models.Movie;
 import utils.HttpClientRequest;
 import utils.JsonParser;
 
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 public class App {
@@ -20,6 +22,9 @@ public class App {
     private static final String STAR_UNICODE = "\u2b50";
 
     public static void main(String[] args) {
+
+        //        File file = new File("resources/config.properties");
+        //        System.out.println(file);
         List<Movie> movies = JsonParser.parser(getTopMovies());
         if (movies == null) {
             return;
@@ -44,22 +49,50 @@ public class App {
         return httpClientRequest.getBody();
     }
 
+    //    private static void printMoviesBeautified(List<Movie> movies) {
+    //        PersonalMovieRating personalMovieRating = new PersonalMovieRating();
+    //        Double[] personalRate = {0.0};
+    //        movies.forEach(movie -> {
+    //            if (personalMovieRating.isVoting()) {
+    //                personalMovieRating.rateMovie(movie.getTitle());
+    //                personalRate[0] = personalMovieRating.getPersonalRating();
+    //            }
+    //            System.out.println("Título: ".concat(movie.getTitle()));
+    //            System.out.println("Poster: ".concat(movie.getImage()));
+    //            printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
+    //            if (personalMovieRating.isVoting()) {
+    //                printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
+    //                personalMovieRating.askingKeepRating();
+    //            }
+    //        });
+    //    }
+
     private static void printMoviesBeautified(List<Movie> movies) {
         PersonalMovieRating personalMovieRating = new PersonalMovieRating();
         Double[] personalRate = {0.0};
-        movies.forEach(movie -> {
-            if (personalMovieRating.isVoting()) {
-                personalMovieRating.rateMovie(movie.getTitle());
-                personalRate[0] = personalMovieRating.getPersonalRating();
-            }
-            System.out.println("Título: ".concat(movie.getTitle()));
-            System.out.println("Poster: ".concat(movie.getImage()));
-            printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
-            if (personalMovieRating.isVoting()) {
-                printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
-                personalMovieRating.askingKeepRating();
-            }
-        });
+        var movie = movies.get(0);
+        if (personalMovieRating.isVoting()) {
+            personalMovieRating.rateMovie(movie.getTitle());
+            personalRate[0] = personalMovieRating.getPersonalRating();
+        }
+        System.out.println("Título: ".concat(movie.getTitle()));
+        System.out.println("Poster: ".concat(movie.getImage()));
+        printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
+        if (personalMovieRating.isVoting()) {
+            printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
+            personalMovieRating.askingKeepRating();
+        }
+        generateSticker(movie);
+    }
+
+    private static void generateSticker(Movie movie) {
+        try {
+            StickerGenerator stickerGenerator =
+                new StickerGenerator(new URL(movie.getImage()), "resources/stickers/", movie.getTitle());
+            stickerGenerator.createSticker();
+        } catch (Exception e) {
+            System.out.println("printMoviesBeautified Exception: ".concat(e.getMessage()));
+        }
     }
 
     private static void printRating(String description, Double rate, String rateColor) {
