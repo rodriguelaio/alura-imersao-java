@@ -72,12 +72,12 @@ public class App {
         Double[] personalRate = {0.0};
         var movie = movies.get(0);
         if (personalMovieRating.isVoting()) {
-            personalMovieRating.rateMovie(movie.getTitle());
+            personalMovieRating.rateMovie(movie.title());
             personalRate[0] = personalMovieRating.getPersonalRating();
         }
-        System.out.println("Título: ".concat(movie.getTitle()));
-        System.out.println("Poster: ".concat(movie.getImageUrl()));
-        printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
+        System.out.println("Título: ".concat(movie.title()));
+        System.out.println("Poster: ".concat(movie.imageUrl()));
+        printRating("Classificação Geral: ", movie.rating(), MAGENTA_BACKGROUND);
         if (personalMovieRating.isVoting()) {
             printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
             personalMovieRating.askingKeepRating();
@@ -88,7 +88,7 @@ public class App {
     private static void generateSticker(Movie movie) {
         try {
             StickerGenerator stickerGenerator =
-                new StickerGenerator(new URL(movie.getImageUrl()), "resources/stickers/", movie.getTitle(), "guelaio");
+                new StickerGenerator(new URL(movie.imageUrl()), "resources/stickers/", movie.title(), "guelaio");
             stickerGenerator.createSticker();
         } catch (Exception e) {
             System.out.println("printMoviesBeautified Exception: ".concat(e.getMessage()));
