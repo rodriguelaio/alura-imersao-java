@@ -1,20 +1,20 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 
 public class StickerGenerator {
 
-    private static final double NEW_IMAGE_HEIGHT_PERCENTAGE = 1.2;
+    private static final double NEW_IMAGE_HEIGHT_PERCENTAGE = 1.1;
 
     private static final String NEW_IMAGE_EXTENSION = "png";
 
     private String newFilePath;
 
     private String newFileName;
+
+    private String subtitleText;
 
     private BufferedImage originalImage;
 
@@ -24,6 +24,10 @@ public class StickerGenerator {
 
     public String getNewFileName() {
         return newFileName;
+    }
+
+    public String getSubtitleText() {
+        return subtitleText;
     }
 
     public BufferedImage getOriginalImage() {
@@ -38,15 +42,20 @@ public class StickerGenerator {
         this.newFileName = newFileName;
     }
 
+    public void setSubtitleText(String subtitleText) {
+        this.subtitleText = subtitleText;
+    }
+
     private void setOriginalImage(BufferedImage originalImage) {
         this.originalImage = originalImage;
     }
 
-    public StickerGenerator(URL fileUrl, String newFilePath, String newFileName) {
+    public StickerGenerator(URL fileUrl, String newFilePath, String newFileName, String subtitleText) {
         try {
             setNewFilePath(newFilePath);
             setNewFileName(newFileName.replace(" ", "_"));
             setOriginalImage(ImageIO.read(fileUrl));
+            setSubtitleText(subtitleText);
         } catch (Exception e) {
             System.out.println("StickerGenerator Exception: ".concat(e.getMessage()));
         }
@@ -74,7 +83,8 @@ public class StickerGenerator {
     }
 
     public void createSticker() {
-        var newImage = new BufferedImage(getOriginalImage().getWidth(),
+        var newImage = new BufferedImage(
+            getOriginalImage().getWidth(),
             calculateNewImageHeight(getOriginalImage().getHeight()),
             BufferedImage.TRANSLUCENT);
         drawNewImage(newImage);
@@ -88,33 +98,24 @@ public class StickerGenerator {
     }
 
     private void printSubtitle(Graphics2D graphics2D, BufferedImage newImage) {
-        Font font = new Font(Font.SANS_SERIF, Font.BOLD, 60);
-        FontMetrics metrics = graphics2D.getFontMetrics(font);
+        Font font = new Font(Font.SERIF, Font.BOLD, 60);
         graphics2D.setFont(font);
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.drawString("guelaio",
-            newImage.getWidth() / 2,
-            Double.valueOf(getOriginalImage().getHeight() * 1.1).intValue());
+        graphics2D.setColor(Color.YELLOW);
+        var dimensions = calculateCentralizedSubtitle(graphics2D, newImage, font);
+        graphics2D.drawString(getSubtitleText(), dimensions[0], dimensions[1]);
     }
 
-//    private void seila(Graphics2D graphics2D) {
-//        FontRenderContext context = graphics2D.getFontRenderContext();
-//        Font font = new Font("Arial", Font.BOLD, 48);
-//        TextLayout txt = new TextLayout("guelaio", font, context);
-//    }
-//
-//    private void drawCenteredString(Graphics2D g, String text, Rectangle rect, Font font) {
-//        // Get the FontMetrics
-//        FontMetrics metrics = g.getFontMetrics(font);
-//        // Determine the X coordinate for the text
-//        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
-//        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-//        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
-//        // Set the font
-//        g.setFont(font);
-//        // Draw the String
-//        g.drawString(text, x, y);
-//    }
+    private int[] calculateCentralizedSubtitle(Graphics2D graphics2D, BufferedImage newImage, Font font) {
+        FontMetrics metrics = graphics2D.getFontMetrics(font);
+        Rectangle rectangle = new Rectangle(
+            0,
+            getOriginalImage().getHeight(),
+            getOriginalImage().getWidth(),
+            newImage.getHeight() - getOriginalImage().getHeight());
+        int x = rectangle.x + (rectangle.width - metrics.stringWidth(getSubtitleText())) / 2;
+        int y = rectangle.y + ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        return new int[] {x, y};
+    }
 
     private void createNewImageFile(BufferedImage newImage) {
         try {

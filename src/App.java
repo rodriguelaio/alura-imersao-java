@@ -1,7 +1,7 @@
 import enums.URLS;
 import models.Movie;
-import utils.HttpClientRequest;
 import parsers.JsonParser;
+import utils.HttpClientRequest;
 
 import java.net.URL;
 import java.util.List;
@@ -88,7 +88,7 @@ public class App {
     private static void generateSticker(Movie movie) {
         try {
             StickerGenerator stickerGenerator =
-                new StickerGenerator(new URL(movie.getImageUrl()), "resources/stickers/", movie.getTitle());
+                new StickerGenerator(new URL(movie.getImageUrl()), "resources/stickers/", movie.getTitle(), "guelaio");
             stickerGenerator.createSticker();
         } catch (Exception e) {
             System.out.println("printMoviesBeautified Exception: ".concat(e.getMessage()));
