@@ -1,9 +1,8 @@
 import enums.URLS;
 import models.Movie;
 import utils.HttpClientRequest;
-import utils.JsonParser;
+import parsers.JsonParser;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -25,7 +24,8 @@ public class App {
 
         //        File file = new File("resources/config.properties");
         //        System.out.println(file);
-        List<Movie> movies = JsonParser.parser(getTopMovies());
+        JsonParser parser = URLS.MOCKED_TOP_250_MOVIES.getJsonParser();
+        List<Movie> movies = parser.parser(getTopMovies());
         if (movies == null) {
             return;
         }
@@ -76,7 +76,7 @@ public class App {
             personalRate[0] = personalMovieRating.getPersonalRating();
         }
         System.out.println("Título: ".concat(movie.getTitle()));
-        System.out.println("Poster: ".concat(movie.getImage()));
+        System.out.println("Poster: ".concat(movie.getImageUrl()));
         printRating("Classificação Geral: ", movie.getRating(), MAGENTA_BACKGROUND);
         if (personalMovieRating.isVoting()) {
             printRating("Classificação Própria: ", personalRate[0], PURPLE_BACKGROUND);
@@ -88,7 +88,7 @@ public class App {
     private static void generateSticker(Movie movie) {
         try {
             StickerGenerator stickerGenerator =
-                new StickerGenerator(new URL(movie.getImage()), "resources/stickers/", movie.getTitle());
+                new StickerGenerator(new URL(movie.getImageUrl()), "resources/stickers/", movie.getTitle());
             stickerGenerator.createSticker();
         } catch (Exception e) {
             System.out.println("printMoviesBeautified Exception: ".concat(e.getMessage()));

@@ -1,18 +1,18 @@
-package utils;
+package parsers.implementations;
 
+import parsers.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.Movie;
 
 import java.util.List;
 
-public class JsonParser {
+public class MoviesJsonParserImpl implements JsonParser {
 
-    public static List<Movie> parser(String json) {
+    public List<Movie> parser(String json) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(json);
+            var objectMapper = new ObjectMapper();
+            var jsonNode = objectMapper.readTree(json);
             return objectMapper.readValue(jsonNode.get("items").toString(), new TypeReference<>() {
             });
         } catch (Exception e) {

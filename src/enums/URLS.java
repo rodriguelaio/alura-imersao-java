@@ -1,24 +1,33 @@
 package enums;
 
 import utils.ConfigPropertiesReader;
+import parsers.JsonParser;
+import parsers.implementations.MoviesJsonParserImpl;
 
 public enum URLS {
-    IMDB_TOP_250_MOVIES("imDbUrl"),
-    MOCKED_TOP_250_MOVIES("mockedTop250MoviesApiUrl"),
-    MOCKED_TOP_250_TVS("mockedTop250TVApisUrl"),
-    MOCKED_MOST_POPULAR_MOVIES("mockedMostPopularMoviesApiUrl"),
-    MOCKED_MOST_POPULAR_TV("mockedMostPopularTVsApiUrl");
+    IMDB_TOP_250_MOVIES("imDbUrl", new MoviesJsonParserImpl()),
+    MOCKED_TOP_250_MOVIES("mockedTop250MoviesApiUrl", new MoviesJsonParserImpl()),
+    MOCKED_TOP_250_TVS("mockedTop250TVApisUrl", new MoviesJsonParserImpl()),
+    MOCKED_MOST_POPULAR_MOVIES("mockedMostPopularMoviesApiUrl", new MoviesJsonParserImpl()),
+    MOCKED_MOST_POPULAR_TV("mockedMostPopularTVsApiUrl", new MoviesJsonParserImpl());
 
     private final String url;
 
+    private final JsonParser jsonParser;
+
     private static final String imDbTokenPropertyKey = "imDbToken";
 
-    URLS(String propertyKey) {
+    URLS(String propertyKey, JsonParser jsonParser) {
         this.url = getFinalUrl(propertyKey);
+        this.jsonParser = jsonParser;
     }
 
     public String getUrl() {
         return this.url;
+    }
+
+    public JsonParser getJsonParser() {
+        return this.jsonParser;
     }
 
     private String getFinalUrl(String propertyKey) {
