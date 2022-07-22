@@ -1,19 +1,19 @@
 package parsers.implementations;
 
-import parsers.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import models.Movie;
+import models.NasaImage;
+import parsers.JsonParser;
 
 import java.util.List;
 
-public class MoviesJsonParserImpl implements JsonParser {
+public class NasaJsonParserImpl implements JsonParser {
 
-    public List<Movie> parser(String json) {
+    public List<NasaImage> parser(String json) {
         try {
             var objectMapper = new ObjectMapper();
             var jsonNode = objectMapper.readTree(json);
-            return objectMapper.readValue(jsonNode.get("items").toString(), new TypeReference<>() {
+            return objectMapper.readValue(jsonNode.toString(), new TypeReference<>() {
             });
         } catch (Exception e) {
             System.out.println("NasaJsonParserImpl Exception: ".concat(e.getMessage()));

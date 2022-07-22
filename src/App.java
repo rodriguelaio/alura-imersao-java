@@ -24,7 +24,7 @@ public class App {
 
         //        File file = new File("resources/config.properties");
         //        System.out.println(file);
-        JsonParser parser = URLS.MOCKED_TOP_250_MOVIES.getJsonParser();
+        JsonParser parser = URLS.MOCKED_IMDB_TOP_250_MOVIES.getJsonParser();
         List<Movie> movies = parser.parser(getTopMovies());
         if (movies == null) {
             return;
@@ -37,7 +37,7 @@ public class App {
         if ((responseBody = getRequestBody(URLS.IMDB_TOP_250_MOVIES.getUrl())) != null) {
             return responseBody;
         }
-        return getRequestBody(URLS.MOCKED_TOP_250_MOVIES.getUrl());
+        return getRequestBody(URLS.MOCKED_IMDB_TOP_250_MOVIES.getUrl());
     }
 
     private static String getRequestBody(String url) {

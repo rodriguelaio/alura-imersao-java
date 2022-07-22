@@ -1,15 +1,18 @@
 package enums;
 
-import utils.ConfigPropertiesReader;
 import parsers.JsonParser;
 import parsers.implementations.MoviesJsonParserImpl;
+import parsers.implementations.NasaJsonParserImpl;
+import utils.ConfigPropertiesReader;
 
 public enum URLS {
     IMDB_TOP_250_MOVIES("imDbUrl", new MoviesJsonParserImpl()),
-    MOCKED_TOP_250_MOVIES("mockedTop250MoviesApiUrl", new MoviesJsonParserImpl()),
-    MOCKED_TOP_250_TVS("mockedTop250TVApisUrl", new MoviesJsonParserImpl()),
-    MOCKED_MOST_POPULAR_MOVIES("mockedMostPopularMoviesApiUrl", new MoviesJsonParserImpl()),
-    MOCKED_MOST_POPULAR_TV("mockedMostPopularTVsApiUrl", new MoviesJsonParserImpl());
+    MOCKED_IMDB_TOP_250_MOVIES("mockedTop250MoviesApiUrl", new MoviesJsonParserImpl()),
+    MOCKED_IMDB_TOP_250_TVS("mockedTop250TVApisUrl", new MoviesJsonParserImpl()),
+    MOCKED_IMDB_MOST_POPULAR_MOVIES("mockedMostPopularMoviesApiUrl", new MoviesJsonParserImpl()),
+    MOCKED_IMDB_MOST_POPULAR_TV("mockedMostPopularTVsApiUrl", new MoviesJsonParserImpl()),
+
+    MOCKED_NASA_APOD("mockedNasaApodApi", new NasaJsonParserImpl());
 
     private final String url;
 
