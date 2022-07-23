@@ -1,20 +1,23 @@
+package stickers.implementations;
+
 import enums.URLS;
 import models.Nasa;
+import stickers.Sticker;
 import utils.HttpClientRequest;
 
 import java.net.URL;
 import java.util.List;
 
-public class NasaSticker {
+public class NasaStickerImpl implements Sticker {
 
     private static final String STICKER_FOLDER_PATH = "resources/stickers/nasa/";
 
-    public static void generateAPODStickers() {
-        List<Nasa> nasas = URLS.MOCKED_NASA_APOD.getJsonParser().parser(getRequestBody(URLS.MOCKED_NASA_APOD.getUrl()));
+    public void generateSticker(URLS url) {
+        List<Nasa> nasas = url.getJsonParser().parser(getRequestBody(URLS.MOCKED_NASA_APOD.getUrl()));
         if (nasas == null) {
             return;
         }
-        nasas.forEach(NasaSticker::generateSticker);
+        nasas.forEach(NasaStickerImpl::generateSticker);
     }
 
     private static String getRequestBody(String url) {

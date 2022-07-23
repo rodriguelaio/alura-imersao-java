@@ -1,7 +1,12 @@
+import enums.URLS;
+import stickers.Sticker;
+import stickers.implementations.IMDbStickerImpl;
+
 public class App {
 
     public static void main(String[] args) {
-        IMDbSticker.generateTopMoviesStickers();
-//        NasaSticker.generateAPODStickers();
+        URLS url = URLS.MOCKED_NASA_APOD;
+        Sticker sticker = url.getSticker();
+        sticker.generateSticker(url);
     }
 }

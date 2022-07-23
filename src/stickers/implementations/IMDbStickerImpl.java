@@ -1,12 +1,17 @@
+package stickers.implementations;
+
 import enums.URLS;
 import models.IMDb;
 import parsers.JsonParser;
+import stickers.PersonalIMDbRating;
+import stickers.Sticker;
+import stickers.StickerGenerator;
 import utils.HttpClientRequest;
 
 import java.net.URL;
 import java.util.List;
 
-public class IMDbSticker {
+public class IMDbStickerImpl implements Sticker {
 
     private static final String ESC_UNICODE = "\u001B[";
 
@@ -22,22 +27,8 @@ public class IMDbSticker {
 
     private static final String STICKER_FOLDER_PATH = "resources/stickers/imdb/";
 
-    public static void generateTopMoviesStickers() {
-        generateImDbStickers(URLS.MOCKED_IMDB_TOP_250_MOVIES, getTopMovies());
-    }
-
-    public static void generateTopTvShowsStickers() {
-        generateImDbStickers(URLS.MOCKED_IMDB_TOP_250_TVS, getRequestBody(URLS.MOCKED_IMDB_TOP_250_TVS.getUrl()));
-    }
-
-    public static void generateMostPopularMoviesStickers() {
-        generateImDbStickers(URLS.MOCKED_IMDB_MOST_POPULAR_MOVIES,
-            getRequestBody(URLS.MOCKED_IMDB_MOST_POPULAR_MOVIES.getUrl()));
-    }
-
-    public static void generateMostPopularTvShowsStickers() {
-        generateImDbStickers(URLS.MOCKED_IMDB_MOST_POPULAR_TV,
-            getRequestBody(URLS.MOCKED_IMDB_MOST_POPULAR_TV.getUrl()));
+    public void generateSticker(URLS url) {
+        generateImDbStickers(url, getRequestBody(url.getUrl()));
     }
 
     private static void generateImDbStickers(URLS url, String imDbJson) {
@@ -47,14 +38,6 @@ public class IMDbSticker {
             return;
         }
         printIMDBsBeautified(iMDbs);
-    }
-
-    private static String getTopMovies() {
-        String responseBody;
-        if ((responseBody = getRequestBody(URLS.IMDB_TOP_250_MOVIES.getUrl())) != null) {
-            return responseBody;
-        }
-        return getRequestBody(URLS.MOCKED_IMDB_TOP_250_MOVIES.getUrl());
     }
 
     private static String getRequestBody(String url) {

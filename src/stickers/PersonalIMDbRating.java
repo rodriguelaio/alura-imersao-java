@@ -1,3 +1,5 @@
+package stickers;
+
 import java.util.Scanner;
 
 public class PersonalIMDbRating {
