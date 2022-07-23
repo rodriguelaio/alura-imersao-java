@@ -1,6 +1,5 @@
 import enums.URLS;
 import stickers.Sticker;
-import stickers.implementations.IMDbStickerImpl;
 
 public class App {
 
