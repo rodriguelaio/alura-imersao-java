@@ -6,7 +6,9 @@ import java.net.URL;
 
 public class StickerGenerator {
 
-    private static final double NEW_IMAGE_HEIGHT_PERCENTAGE = 1.1;
+    private static final double NEW_PORTRAIT_IMAGE_HEIGHT_PERCENTAGE = 1.1;
+
+    private static final double NEW_LANDSCAPE_IMAGE_HEIGHT_PERCENTAGE = 1.3;
 
     private static final String NEW_IMAGE_EXTENSION = "png";
 
@@ -18,39 +20,13 @@ public class StickerGenerator {
         }
     }
 
-    public static void generateSticker(String filePath, String newFilePath, String newFileName, String subtitleText) {
-        BufferedImage bufferedImage;
-        if ((bufferedImage = generateBufferedImageByFile(new File(filePath))) == null) {
-            return;
-        }
-        createSticker(bufferedImage, newFilePath, newFileName.replace(" ", "_"), subtitleText);
-    }
-
-    public static void generateSticker(File file, String newFilePath, String newFileName, String subtitleText) {
-        BufferedImage bufferedImage;
-        if ((bufferedImage = generateBufferedImageByFile(file)) == null) {
-            return;
-        }
-        createSticker(bufferedImage, newFilePath, newFileName.replace(" ", "_"), subtitleText);
-    }
-
-    private static BufferedImage generateBufferedImageByFile(File filePath) {
-        try {
-            validateFilePath(filePath);
-            return ImageIO.read(filePath);
-        } catch (Exception e) {
-            System.out.println("generateBufferedImageByFile Exception: ".concat(e.getMessage()));
-            return null;
-        }
-    }
-
     private static void createSticker(BufferedImage originalImage,
                                       String newFilePath,
                                       String newFileName,
                                       String subtitleText) {
 
         var newImage = new BufferedImage(originalImage.getWidth(),
-            calculateNewImageHeight(originalImage.getHeight()),
+            calculateNewImageHeight(originalImage.getHeight(), originalImage.getWidth()),
             BufferedImage.TRANSLUCENT);
         drawNewImage(originalImage, newImage, newFilePath, newFileName, subtitleText);
     }
@@ -68,36 +44,73 @@ public class StickerGenerator {
     }
 
     private static void printSubtitle(BufferedImage originalImage, Graphics2D graphics2D, String subtitleText) {
-        var font =
-            scaleFontToFit(originalImage.getWidth(), graphics2D, new Font(Font.SERIF, Font.BOLD, 400), subtitleText);
+        var font = scaleFontToFit(originalImage.getHeight(),
+            originalImage.getWidth(),
+            graphics2D,
+            new Font(Font.SERIF, Font.BOLD, 400),
+            subtitleText);
         graphics2D.setFont(font);
         graphics2D.setColor(Color.YELLOW);
-        var dimensions = calculateCentralizedSubtitle(originalImage, graphics2D.getFontMetrics(font), subtitleText);
+        var dimensions = calculateCentralizedSubtitle(originalImage.getHeight(),
+            originalImage.getWidth(),
+            graphics2D.getFontMetrics(font),
+            subtitleText);
         graphics2D.drawString(subtitleText, dimensions[0], dimensions[1]);
     }
 
-    public static Font scaleFontToFit(int width, Graphics graphics, Font originalFont, String subtitleText) {
+    public static Font scaleFontToFit(int height,
+                                      int width,
+                                      Graphics graphics,
+                                      Font originalFont,
+                                      String subtitleText) {
+        int referenceValue = Math.min(width, height);
         float fontSize = originalFont.getSize();
         float fontWidth = graphics.getFontMetrics(originalFont).stringWidth(subtitleText);
-        if (fontWidth <= width) {
+        if (fontWidth <= referenceValue) {
             return originalFont;
         }
-        fontSize = ((float) width / fontWidth) * fontSize;
+        fontSize = ((float) referenceValue / fontWidth) * fontSize;
         return originalFont.deriveFont(fontSize);
     }
 
-    private static int[] calculateCentralizedSubtitle(BufferedImage originalImage,
+    private static int[] calculateCentralizedSubtitle(int originalImageHight,
+                                                      int originalImageWidth,
                                                       FontMetrics metrics,
                                                       String subtitleText) {
         int x = 0;
         int y = 0;
         Rectangle rectangle = new Rectangle(0,
-            originalImage.getHeight(),
-            originalImage.getWidth(),
-            Double.valueOf(originalImage.getHeight() * (NEW_IMAGE_HEIGHT_PERCENTAGE - 1)).intValue());
-        x = rectangle.x + (rectangle.width - metrics.stringWidth(subtitleText)) / 2;
-        y = rectangle.y + ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
+            originalImageHight,
+            originalImageWidth,
+            Double.valueOf(originalImageHight * (getNewImageHight(originalImageHight, originalImageWidth) - 1))
+                .intValue());
+        x = rectangle.x +
+            calculateRectangleNewX(originalImageHight, originalImageWidth, rectangle, metrics, subtitleText);
+        y = rectangle.y +
+            calculateRectangleNewY(originalImageHight, originalImageWidth, rectangle, metrics, subtitleText);
         return new int[] {x, y};
+    }
+
+    private static int calculateRectangleNewX(int originalImageHight,
+                                              int originalImageWidth,
+                                              Rectangle rectangle,
+                                              FontMetrics metrics,
+                                              String subtitleText) {
+        if (originalImageHight > originalImageWidth) {
+            return (rectangle.width - metrics.stringWidth(subtitleText)) / 2;
+        }
+        return ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
+    }
+
+    private static int calculateRectangleNewY(int originalImageHight,
+                                              int originalImageWidth,
+                                              Rectangle rectangle,
+                                              FontMetrics metrics,
+                                              String subtitleText) {
+        if (originalImageHight > originalImageWidth) {
+            return ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        }
+        return (rectangle.width - metrics.stringWidth(subtitleText)) / 2;
     }
 
     private static void createNewImageFile(BufferedImage newImage, String newFilePath, String newFileName) {
@@ -116,7 +129,14 @@ public class StickerGenerator {
         }
     }
 
-    private static int calculateNewImageHeight(int oldBufferedImageHeight) {
-        return Double.valueOf(oldBufferedImageHeight * NEW_IMAGE_HEIGHT_PERCENTAGE).intValue();
+    private static int calculateNewImageHeight(int originalImageHeight, int originalImageWidth) {
+        return Double.valueOf(originalImageHeight * getNewImageHight(originalImageHeight, originalImageWidth))
+            .intValue();
+    }
+
+    private static double getNewImageHight(int originalImageHeight, int originalImageWidth) {
+        return originalImageHeight < originalImageWidth ?
+            NEW_LANDSCAPE_IMAGE_HEIGHT_PERCENTAGE :
+            NEW_PORTRAIT_IMAGE_HEIGHT_PERCENTAGE;
     }
 }
