@@ -3,6 +3,7 @@ package stickers.implementations;
 import enums.URLS;
 import models.Nasa;
 import stickers.Sticker;
+import stickers.StickerGenerator;
 import utils.HttpClientRequest;
 
 import java.net.URL;
