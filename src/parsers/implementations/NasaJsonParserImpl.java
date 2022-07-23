@@ -2,14 +2,14 @@ package parsers.implementations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import models.NasaImage;
+import models.Nasa;
 import parsers.JsonParser;
 
 import java.util.List;
 
 public class NasaJsonParserImpl implements JsonParser {
 
-    public List<NasaImage> parser(String json) {
+    public List<Nasa> parser(String json) {
         try {
             var objectMapper = new ObjectMapper();
             var jsonNode = objectMapper.readTree(json);
