@@ -87,11 +87,10 @@ public class IMDbSticker {
 
     private static void generateSticker(IMDb iMDb) {
         try {
-            StickerGenerator stickerGenerator = new StickerGenerator(new URL(iMDb.imageUrl()),
+            StickerGenerator.generateSticker(new URL(iMDb.imageUrl()),
                 STICKER_FOLDER_PATH,
                 iMDb.title(),
                 getSubtitleByRate(iMDb.rating()));
-            stickerGenerator.createSticker();
         } catch (Exception e) {
             System.out.println("generateSticker Exception: ".concat(e.getMessage()));
         }

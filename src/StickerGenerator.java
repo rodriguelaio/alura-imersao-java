@@ -10,133 +10,113 @@ public class StickerGenerator {
 
     private static final String NEW_IMAGE_EXTENSION = "png";
 
-    private String newFilePath;
-
-    private String newFileName;
-
-    private String subtitleText;
-
-    private BufferedImage originalImage;
-
-    public String getNewFilePath() {
-        return newFilePath;
-    }
-
-    public String getNewFileName() {
-        return newFileName;
-    }
-
-    public String getSubtitleText() {
-        return subtitleText;
-    }
-
-    public BufferedImage getOriginalImage() {
-        return originalImage;
-    }
-
-    private void setNewFilePath(String newFilePath) {
-        this.newFilePath = newFilePath;
-    }
-
-    private void setNewFileName(String newFileName) {
-        this.newFileName = newFileName;
-    }
-
-    public void setSubtitleText(String subtitleText) {
-        this.subtitleText = subtitleText;
-    }
-
-    private void setOriginalImage(BufferedImage originalImage) {
-        this.originalImage = originalImage;
-    }
-
-    public StickerGenerator(URL fileUrl, String newFilePath, String newFileName, String subtitleText) {
+    public static void generateSticker(URL fileUrl, String newFilePath, String newFileName, String subtitleText) {
         try {
-            setNewFilePath(newFilePath);
-            setNewFileName(newFileName.replace(" ", "_"));
-            setOriginalImage(ImageIO.read(fileUrl));
-            setSubtitleText(subtitleText);
+            createSticker(ImageIO.read(fileUrl), newFilePath, newFileName.replace(" ", "_"), subtitleText);
         } catch (Exception e) {
             System.out.println("StickerGenerator Exception: ".concat(e.getMessage()));
         }
     }
 
-    public StickerGenerator(String filePath, String newFilePath, String newFileName) {
-        setNewFilePath(newFilePath);
-        setNewFileName(newFileName.replace(" ", "_"));
-        prepareFile(new File(filePath));
+    public static void generateSticker(String filePath, String newFilePath, String newFileName, String subtitleText) {
+        BufferedImage bufferedImage;
+        if ((bufferedImage = generateBufferedImageByFile(new File(filePath))) == null) {
+            return;
+        }
+        createSticker(bufferedImage, newFilePath, newFileName.replace(" ", "_"), subtitleText);
     }
 
-    public StickerGenerator(File filePath, String newFilePath, String newFileName) {
-        setNewFilePath(newFilePath);
-        setNewFileName(newFileName.replace(" ", "_"));
-        prepareFile(filePath);
+    public static void generateSticker(File file, String newFilePath, String newFileName, String subtitleText) {
+        BufferedImage bufferedImage;
+        if ((bufferedImage = generateBufferedImageByFile(file)) == null) {
+            return;
+        }
+        createSticker(bufferedImage, newFilePath, newFileName.replace(" ", "_"), subtitleText);
     }
 
-    private void prepareFile(File filePath) {
+    private static BufferedImage generateBufferedImageByFile(File filePath) {
         try {
             validateFilePath(filePath);
-            setOriginalImage(ImageIO.read(filePath));
+            return ImageIO.read(filePath);
         } catch (Exception e) {
-            System.out.println("StickerGenerator Exception: ".concat(e.getMessage()));
+            System.out.println("generateBufferedImageByFile Exception: ".concat(e.getMessage()));
+            return null;
         }
     }
 
-    public void createSticker() {
-        var newImage = new BufferedImage(
-            getOriginalImage().getWidth(),
-            calculateNewImageHeight(getOriginalImage().getHeight()),
+    private static void createSticker(BufferedImage originalImage,
+                                      String newFilePath,
+                                      String newFileName,
+                                      String subtitleText) {
+
+        var newImage = new BufferedImage(originalImage.getWidth(),
+            calculateNewImageHeight(originalImage.getHeight()),
             BufferedImage.TRANSLUCENT);
-        drawNewImage(newImage);
+        drawNewImage(originalImage, newImage, newFilePath, newFileName, subtitleText);
     }
 
-    private void drawNewImage(BufferedImage newImage) {
-        Graphics2D graphics2D = (Graphics2D) newImage.getGraphics();
-        graphics2D.drawImage(getOriginalImage(), 0, 0, null);
-        printSubtitle(graphics2D, newImage);
-        createNewImageFile(newImage);
+    private static void drawNewImage(BufferedImage originalImage,
+                                     BufferedImage newImage,
+                                     String newFilePath,
+                                     String newFileName,
+                                     String subtitleText) {
+
+        var graphics2D = (Graphics2D) newImage.getGraphics();
+        graphics2D.drawImage(originalImage, 0, 0, null);
+        printSubtitle(originalImage, graphics2D, subtitleText);
+        createNewImageFile(newImage, newFilePath, newFileName);
     }
 
-    private void printSubtitle(Graphics2D graphics2D, BufferedImage newImage) {
-        Font font = new Font(Font.SERIF, Font.BOLD, 60);
+    private static void printSubtitle(BufferedImage originalImage, Graphics2D graphics2D, String subtitleText) {
+        var font =
+            scaleFontToFit(originalImage.getWidth(), graphics2D, new Font(Font.SERIF, Font.BOLD, 400), subtitleText);
         graphics2D.setFont(font);
         graphics2D.setColor(Color.YELLOW);
-        var dimensions = calculateCentralizedSubtitle(graphics2D, newImage, font);
-        graphics2D.drawString(getSubtitleText(), dimensions[0], dimensions[1]);
+        var dimensions = calculateCentralizedSubtitle(originalImage, graphics2D.getFontMetrics(font), subtitleText);
+        graphics2D.drawString(subtitleText, dimensions[0], dimensions[1]);
     }
 
-    private int[] calculateCentralizedSubtitle(Graphics2D graphics2D, BufferedImage newImage, Font font) {
-        FontMetrics metrics = graphics2D.getFontMetrics(font);
-        Rectangle rectangle = new Rectangle(
-            0,
-            getOriginalImage().getHeight(),
-            getOriginalImage().getWidth(),
-            newImage.getHeight() - getOriginalImage().getHeight());
-        int x = rectangle.x + (rectangle.width - metrics.stringWidth(getSubtitleText())) / 2;
-        int y = rectangle.y + ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
+    public static Font scaleFontToFit(int width, Graphics graphics, Font originalFont, String subtitleText) {
+        float fontSize = originalFont.getSize();
+        float fontWidth = graphics.getFontMetrics(originalFont).stringWidth(subtitleText);
+        if (fontWidth <= width) {
+            return originalFont;
+        }
+        fontSize = ((float) width / fontWidth) * fontSize;
+        return originalFont.deriveFont(fontSize);
+    }
+
+    private static int[] calculateCentralizedSubtitle(BufferedImage originalImage,
+                                                      FontMetrics metrics,
+                                                      String subtitleText) {
+        int x = 0;
+        int y = 0;
+        Rectangle rectangle = new Rectangle(0,
+            originalImage.getHeight(),
+            originalImage.getWidth(),
+            Double.valueOf(originalImage.getHeight() * (NEW_IMAGE_HEIGHT_PERCENTAGE - 1)).intValue());
+        x = rectangle.x + (rectangle.width - metrics.stringWidth(subtitleText)) / 2;
+        y = rectangle.y + ((rectangle.height - metrics.getHeight()) / 2) + metrics.getAscent();
         return new int[] {x, y};
     }
 
-    private void createNewImageFile(BufferedImage newImage) {
+    private static void createNewImageFile(BufferedImage newImage, String newFilePath, String newFileName) {
         try {
-            File newImageFilePath =
-                new File(getNewFilePath().concat(getNewFileName()).concat(".").concat(NEW_IMAGE_EXTENSION));
-
+            File newImageFilePath = new File(newFilePath.concat(newFileName).concat(".").concat(NEW_IMAGE_EXTENSION));
             validateFilePath(newImageFilePath.getParentFile());
-
             ImageIO.write(newImage, NEW_IMAGE_EXTENSION, newImageFilePath);
         } catch (Exception e) {
-            System.out.println("StickerGenerator Exception: ".concat(e.getMessage()));
+            System.out.println("createNewImageFile Exception: ".concat(e.getMessage()));
         }
     }
 
-    private void validateFilePath(File filePath) {
+    private static void validateFilePath(File filePath) {
         if (!filePath.exists()) {
             filePath.mkdirs();
         }
     }
 
-    private int calculateNewImageHeight(int oldBufferedImageHeight) {
+    private static int calculateNewImageHeight(int oldBufferedImageHeight) {
         return Double.valueOf(oldBufferedImageHeight * NEW_IMAGE_HEIGHT_PERCENTAGE).intValue();
     }
 }
