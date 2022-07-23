@@ -3,13 +3,13 @@ package parsers.implementations;
 import parsers.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import models.Movie;
+import models.IMDb;
 
 import java.util.List;
 
-public class MoviesJsonParserImpl implements JsonParser {
+public class IMDbJsonParserImpl implements JsonParser {
 
-    public List<Movie> parser(String json) {
+    public List<IMDb> parser(String json) {
         try {
             var objectMapper = new ObjectMapper();
             var jsonNode = objectMapper.readTree(json);

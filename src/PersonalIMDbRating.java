@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class PersonalMovieRating {
+public class PersonalIMDbRating {
 
     private Double personalRating = 0.0;
 
@@ -22,11 +22,11 @@ public class PersonalMovieRating {
         isVoting = voting;
     }
 
-    public PersonalMovieRating() {
+    public PersonalIMDbRating() {
         askingRatingWill("Gostaria de dar nota para uma lista de filmes?");
     }
 
-    public void rateMovie(String movieName) {
+    public void rateIMDb(String movieName) {
         askingMovieRate(movieName);
     }
 
