@@ -1,10 +1,10 @@
-package br.com.guelaio.alurastickers.stickers.implementations;
+package stickers.implementations;
 
-import br.com.guelaio.alurastickers.enums.URLS;
-import br.com.guelaio.alurastickers.models.Nasa;
-import br.com.guelaio.alurastickers.stickers.Sticker;
-import br.com.guelaio.alurastickers.stickers.StickerGenerator;
-import br.com.guelaio.alurastickers.utils.HttpClientRequest;
+import enums.URLS;
+import models.Nasa;
+import stickers.Sticker;
+import stickers.StickerGenerator;
+import utils.HttpClientRequest;
 
 import java.net.URL;
 import java.util.List;

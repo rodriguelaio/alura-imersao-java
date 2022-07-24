@@ -1,4 +1,4 @@
-package br.com.guelaio.alurastickers.utils;
+package utils;
 
 import java.net.URI;
 import java.net.http.HttpClient;

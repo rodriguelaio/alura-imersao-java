@@ -1,4 +1,4 @@
-package br.com.guelaio.alurastickers.stickers;
+package stickers;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class StickerGenerator {
         try {
             createSticker(ImageIO.read(fileUrl), newFilePath, newFileName.replace(" ", "_"), subtitleText);
         } catch (Exception e) {
-            System.out.println("generateSticker Exception: ".concat(e.getMessage()));
+            System.out.println("stickers.StickerGenerator Exception: ".concat(e.getMessage()));
         }
     }
 

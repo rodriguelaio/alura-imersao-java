@@ -1,9 +1,9 @@
-package br.com.guelaio.alurastickers.parsers.implementations;
+package parsers.implementations;
 
-import br.com.guelaio.alurastickers.models.Nasa;
-import br.com.guelaio.alurastickers.parsers.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import models.Nasa;
+import parsers.JsonParser;
 
 import java.util.List;
 
