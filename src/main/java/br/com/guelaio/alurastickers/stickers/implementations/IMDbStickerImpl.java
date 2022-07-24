@@ -25,7 +25,7 @@ public class IMDbStickerImpl implements Sticker {
 
     private static final String STAR_UNICODE = "\u2b50";
 
-    private static final String STICKER_FOLDER_PATH = "resources/stickers/imdb/";
+    private static final String STICKER_FOLDER_PATH = "src/main/resources/stickers/imdb/";
 
     public void generateSticker(URLS url) {
         generateImDbStickers(url, getRequestBody(url.getUrl()));
