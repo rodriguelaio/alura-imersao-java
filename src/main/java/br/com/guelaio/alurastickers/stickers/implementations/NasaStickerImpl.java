@@ -11,7 +11,7 @@ import java.util.List;
 
 public class NasaStickerImpl implements Sticker {
 
-    private static final String STICKER_FOLDER_PATH = "src/main/resources/stickers/nasa/";
+    private static final String STICKER_FOLDER_PATH = "resources/stickers/nasa/";
 
     public void generateSticker(URLS url) {
         List<Nasa> nasas = url.getJsonParser().parser(getRequestBody(URLS.MOCKED_NASA_APOD.getUrl()));
