@@ -1,11 +1,11 @@
-package utils;
+package br.com.guelaio.alurastickers.utils;
 
 import java.io.FileInputStream;
 import java.util.Properties;
 
 public class ConfigPropertiesReader {
 
-    private static final String CONFIG_FILE_PATH = "resources/config.properties";
+    private static final String CONFIG_FILE_PATH = "src/main/resources/config.properties";
 
     public static String getConfigPropertiesValue(String propertyKey) {
         try {

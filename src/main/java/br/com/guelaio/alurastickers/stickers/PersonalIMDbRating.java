@@ -1,4 +1,4 @@
-package stickers;
+package br.com.guelaio.alurastickers.stickers;
 
 import java.util.Scanner;
 

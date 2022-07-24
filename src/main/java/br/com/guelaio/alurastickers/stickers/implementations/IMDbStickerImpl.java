@@ -1,12 +1,12 @@
-package stickers.implementations;
+package br.com.guelaio.alurastickers.stickers.implementations;
 
-import enums.URLS;
-import models.IMDb;
-import parsers.JsonParser;
-import stickers.PersonalIMDbRating;
-import stickers.Sticker;
-import stickers.StickerGenerator;
-import utils.HttpClientRequest;
+import br.com.guelaio.alurastickers.enums.URLS;
+import br.com.guelaio.alurastickers.models.IMDb;
+import br.com.guelaio.alurastickers.parsers.JsonParser;
+import br.com.guelaio.alurastickers.stickers.PersonalIMDbRating;
+import br.com.guelaio.alurastickers.stickers.Sticker;
+import br.com.guelaio.alurastickers.stickers.StickerGenerator;
+import br.com.guelaio.alurastickers.utils.HttpClientRequest;
 
 import java.net.URL;
 import java.util.List;

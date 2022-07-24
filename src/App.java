@@ -1,5 +1,5 @@
-import enums.URLS;
-import stickers.Sticker;
+import main.java.br.com.guelaio.alurastickers.enums.URLS;
+import main.java.br.com.guelaio.alurastickers.stickers.Sticker;
 
 public class App {
 

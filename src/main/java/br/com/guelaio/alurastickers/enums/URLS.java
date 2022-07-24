@@ -1,12 +1,12 @@
-package enums;
+package br.com.guelaio.alurastickers.enums;
 
-import parsers.JsonParser;
-import parsers.implementations.IMDbJsonParserImpl;
-import parsers.implementations.NasaJsonParserImpl;
-import stickers.Sticker;
-import stickers.implementations.IMDbStickerImpl;
-import stickers.implementations.NasaStickerImpl;
-import utils.ConfigPropertiesReader;
+import br.com.guelaio.alurastickers.parsers.JsonParser;
+import br.com.guelaio.alurastickers.parsers.implementations.IMDbJsonParserImpl;
+import br.com.guelaio.alurastickers.parsers.implementations.NasaJsonParserImpl;
+import br.com.guelaio.alurastickers.stickers.Sticker;
+import br.com.guelaio.alurastickers.stickers.implementations.IMDbStickerImpl;
+import br.com.guelaio.alurastickers.stickers.implementations.NasaStickerImpl;
+import br.com.guelaio.alurastickers.utils.ConfigPropertiesReader;
 
 public enum URLS {
     IMDB_TOP_250_MOVIES("imDbUrl", new IMDbJsonParserImpl(), new IMDbStickerImpl()),

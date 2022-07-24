@@ -1,9 +1,9 @@
-package parsers.implementations;
+package br.com.guelaio.alurastickers.parsers.implementations;
 
-import parsers.JsonParser;
+import br.com.guelaio.alurastickers.models.IMDb;
+import br.com.guelaio.alurastickers.parsers.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import models.IMDb;
 
 import java.util.List;
 
