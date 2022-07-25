@@ -1,7 +1,7 @@
 package stickers.implementations;
 
 import enums.URLS;
-import models.Nasa;
+import models.Language;
 import stickers.Sticker;
 import stickers.StickerGenerator;
 import utils.HttpClientRequest;
@@ -9,16 +9,16 @@ import utils.HttpClientRequest;
 import java.net.URL;
 import java.util.List;
 
-public class NasaStickerImpl implements Sticker {
+public class LanguageStickerImpl implements Sticker {
 
-    private static final String STICKER_FOLDER_PATH = "resources/stickers/nasa/";
+    private static final String STICKER_FOLDER_PATH = "resources/stickers/language/";
 
     public void generateSticker(URLS url) {
-        List<Nasa> nasas = url.getJsonParser().parser(getRequestBody(url.getUrl()));
-        if (nasas == null) {
+        List<Language> languages = url.getJsonParser().parser(getRequestBody(url.getUrl()));
+        if (languages == null) {
             return;
         }
-        nasas.forEach(NasaStickerImpl::generateSticker);
+        languages.forEach(LanguageStickerImpl::generateSticker);
     }
 
     private static String getRequestBody(String url) {
@@ -30,10 +30,14 @@ public class NasaStickerImpl implements Sticker {
         return httpClientRequest.getBody();
     }
 
-    private static void generateSticker(Nasa nasa) {
+    private static void generateSticker(Language language) {
         try {
-            System.out.println("Generating ".concat(nasa.title()).concat("'s image"));
-            StickerGenerator.generateSticker(new URL(nasa.imageUrl()), STICKER_FOLDER_PATH, nasa.title(), "wow");
+            System.out.println("Generating ".concat(language.title()).concat("'s image"));
+            StickerGenerator.generateSticker(
+                new URL(language.imageUrl()),
+                STICKER_FOLDER_PATH,
+                language.title(),
+                "wow");
         } catch (Exception e) {
             System.out.println("generateSticker Exception: ".concat(e.getMessage()));
         }

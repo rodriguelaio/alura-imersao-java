@@ -2,9 +2,11 @@ package enums;
 
 import parsers.JsonParser;
 import parsers.implementations.IMDbJsonParserImpl;
+import parsers.implementations.LanguageJsonParserImpl;
 import parsers.implementations.NasaJsonParserImpl;
 import stickers.Sticker;
 import stickers.implementations.IMDbStickerImpl;
+import stickers.implementations.LanguageStickerImpl;
 import stickers.implementations.NasaStickerImpl;
 import utils.ConfigPropertiesReader;
 
@@ -15,7 +17,9 @@ public enum URLS {
     MOCKED_IMDB_MOST_POPULAR_MOVIES("mockedMostPopularMoviesApiUrl", new IMDbJsonParserImpl(), new IMDbStickerImpl()),
     MOCKED_IMDB_MOST_POPULAR_TV("mockedMostPopularTVsApiUrl", new IMDbJsonParserImpl(), new IMDbStickerImpl()),
 
-    MOCKED_NASA_APOD("mockedNasaApodApi", new NasaJsonParserImpl(), new NasaStickerImpl());
+    MOCKED_NASA_APOD("mockedNasaApodApi", new NasaJsonParserImpl(), new NasaStickerImpl()),
+
+    LANGUAGE_FIND_ALL("languageFindAll", new LanguageJsonParserImpl(), new LanguageStickerImpl());
 
     private final String url;
 
